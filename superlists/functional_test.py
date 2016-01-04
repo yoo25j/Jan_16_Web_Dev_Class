@@ -52,6 +52,7 @@ class NewVisitorTest(unittest.TestCase):
 
         #satisfied, she goes back to sleep
         #browser.quit()
+        self.fail('Finish the app!') #until we remove this line, it'll be a failure
 
 if __name__ == '__main__':
     unittest.main() #main method, ignore warning
