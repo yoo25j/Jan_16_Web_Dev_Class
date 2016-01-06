@@ -22,8 +22,7 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
 
     def test_can_start_a_list_and_retrieve_it_later(self):
-        # Edith has heard abot a call new online to-do app
-        # She goes to check out its homepage
+
         self.browser.get('http://localhost:8000')
         # She notices the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
@@ -39,9 +38,7 @@ class NewVisitorTest(unittest.TestCase):
         # She types "Buy peacock feathers" into a textbox
         #her hobby is trying fly-fishing lures
         self.enter_a_new_item('Buy peacock feathers')
-        # inputbox.send_keys('Buy peacock feathers')
-        #When she hits enter, the page updates, and now the page lists
-        #1. Buy peacock feathers as the item in a to-do lists
+
         inputbox.send_keys(Keys.ENTER) # Keys is new thing we havne't referrred to yet, import it
         self.check_for_row_in_list_table('1. Buy peacock feathers')
 
@@ -49,21 +46,30 @@ class NewVisitorTest(unittest.TestCase):
 
         self.check_for_row_in_list_table('1. Buy peacock feathers')
         self.check_for_row_in_list_table('2. Use peacock feathers to make a fly')
-        #There is still a textbox inviting her to add another item
-        # She enters 'Use peacock feathers to make fly'
-        # She is very methdolical
 
-        # The homepage updates again, and now shows both items on her lists
-
-        #Edith wonders whether the site will remember her list. Then she sees
-        #that the site has generated a unique URL for her -- there is some
-        #explanatory text to that effect.
-
-        #She visits that URL - her to-do list is still there
-
-        #satisfied, she goes back to sleep
-        #browser.quit()
         self.fail('Finish the app!') #until we remove this line, it'll be a failure
 
 if __name__ == '__main__':
     unittest.main() #main method, ignore warning
+
+# Edith has heard abot a call new online to-do app
+# She goes to check out its homepage
+
+# inputbox.send_keys('Buy peacock feathers')
+#When she hits enter, the page updates, and now the page lists
+#1. Buy peacock feathers as the item in a to-do lists
+
+#There is still a textbox inviting her to add another item
+# She enters 'Use peacock feathers to make fly'
+# She is very methdolical
+
+# The homepage updates again, and now shows both items on her lists
+
+#Edith wonders whether the site will remember her list. Then she sees
+#that the site has generated a unique URL for her -- there is some
+#explanatory text to that effect.
+
+#She visits that URL - her to-do list is still there
+
+#satisfied, she goes back to sleep
+#browser.quit()
