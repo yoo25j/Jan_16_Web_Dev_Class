@@ -39,7 +39,6 @@ class NewVisitorTest(unittest.TestCase):
         #her hobby is trying fly-fishing lures
         self.enter_a_new_item('Buy peacock feathers')
 
-        inputbox.send_keys(Keys.ENTER) # Keys is new thing we havne't referrred to yet, import it
         self.check_for_row_in_list_table('1. Buy peacock feathers')
 
         self.enter_a_new_item('Use peacock feathers to make a fly')
