@@ -4,6 +4,9 @@ from django.shortcuts import render
 #home_page = None
 # Create your views here.
 def home_page(request):
-    return render(request, 'home.html')# remove: HttpResponse('<html><title>To-Do lists</title></html>') #test result = "false is not true"
+    return render(request, 'home.html', {
+        'new_item_text': request.POST.get('item_text', ''),
+    })
+    # remove: HttpResponse('<html><title>To-Do lists</title></html>') #test result = "false is not true"
     #render built into django
     #tell it which file we want to use
