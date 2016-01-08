@@ -24,6 +24,7 @@ class NewVisitorTest(LiveServerTestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
 
         self.browser.get(self.live_server_url)
+
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text #find h1 tag on page, assuming it header we want
         self.assertIn('To-Do', header_text)
@@ -71,3 +72,22 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         #satisfied they both go back to sleep
+    def test_layout_and_styling(self):
+
+        self.browser.set_window_size(1024,768)
+        self.browser.get(self.live_server_url)
+
+        #she starts a new list
+        self.check_input_box_is_centered()
+        self.enter_a_new_item('testing')
+        self.check_input_box_is_centered()
+
+    def check_input_box_is_centered(self):
+
+        #she notices the inputbox is nicely centered
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + (inputbox.size['width']/2),
+            512,
+            delta=5,
+        )
