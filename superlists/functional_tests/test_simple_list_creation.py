@@ -1,5 +1,6 @@
 from .base import TodoFunctionalTest
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 
 class NewVisitorTest(TodoFunctionalTest):
