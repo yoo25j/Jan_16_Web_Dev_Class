@@ -3,20 +3,31 @@ from .base import TodoFunctionalTest
 
 class ItemValidationTest(TodoFunctionalTest):
 
-    @skip("skip dis shit")
-    def test_cannot_add_empty_list_item(self):
-        #Edith goes to home page and accidentally tries
-        #to submit an empty oilst item
-        #she hits enter on the empty input box
+    def test_cannot_add_empty_list_items(self):
+        # Edith goes to the home page and accidentally tries to submit
+        # an empty list item. She hits Enter on the empty input box
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_id('id_new_item').send_keys('\n')
 
-        #the home page refreshes, and tehre is an error message
-        #sayin ghta tlist items cannot be blank
+        # The home page refreshes, and there is an error message saying
+        # that list items cannot be blank
+        error = self.browser.find_element_by_css_selector('.has-error') #1
+        self.assertEqual(error.text, "You can't have an empty list item")
 
-        #she tries again with some text for the item
-        #which now works
+        # She tries again with some text for the item, which now works
+        self.browser.find_element_by_id('id_new_item').send_keys('Buy milk\n')
+        self.check_for_row_in_list_table('1: Buy milk') #2
 
-        #perversely tries to enter a second blank item
+        # Perversely, she now decides to submit a second blank list item
+        self.browser.find_element_by_id('id_new_item').send_keys('\n')
 
-        #she receives a similar warining on the list page
-        #and she can correct it by filling som etext in
-        self.fail('Finish the fucking test Edith')
+        # She receives a similar warning on the list page
+        self.check_for_row_in_list_table('1: Buy milk')
+        error = self.browser.find_element_by_css_selector('.has-error')
+        self.assertEqual(error.text, "You can't have an empty list item")
+
+        # And she can correct it by filling some text in
+        self.browser.find_element_by_id('id_new_item').send_keys('Make tea\n')
+        self.check_for_row_in_list_table('1: Buy milk')
+        self.check_for_row_in_list_table('2: Make tea')
+        #self.fail('Finish the fucking test Edith')

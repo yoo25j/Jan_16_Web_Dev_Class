@@ -1,9 +1,17 @@
-from unittest import skip
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+import sys
 
 class TodoFunctionalTest(StaticLiveServerTestCase):
+
+
+    #@classmethod
+    # def setUpClass(cls):
+    #     [...]
+    # @classmethod
+    # def tearDownClass(cls):
+    #     [...]
+
 
     def setUp(self):
         self.browser = webdriver.Firefox() #new instance of firefox
