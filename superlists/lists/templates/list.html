@@ -14,7 +14,9 @@
             name = "mark_item_done"
             value = "{{ item.id }}"/>
           </td>
-          <td> {{ item.text }}</td>
+          <td {% if item.is_done %} class="todo-done" {% endif %}>
+            {{ item.text }}
+          </td>
         </tr>
     {% endfor %}
     </table>

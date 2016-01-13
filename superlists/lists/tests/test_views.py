@@ -49,53 +49,6 @@ class NewListTest(TestCase):
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_list_view_displays_checkbox(self):
-        current_list = List.objects.create()
-        Item.objects.create(text="Item 1", list = current_list)
-        Item.objects.create(text="Item 2", list = current_list)
-
-        response = self.client.get('/lists/%d/' %current_list.id)
-
-        self.assertContains(response, 'input type = "checkbox"')
-
-    def test_POST_item_toggles_done(self):
-        current_list = List.objects.create()
-        item1 = Item.objects.create(text="Item 1", list = current_list)
-        item2 = Item.objects.create(text="Item 2", list = current_list)
-
-        #POST data
-        response = self.client.post(
-            '/lists/%d/items/' % (current_list.id),
-            data={'mark_item_done' : item1.id}
-        )
-        self.assertRedirects(response, '/lists/%d/' % (current_list.id))
-
-        item1 = Item.objects.get(id = item1.id)
-        item2 = Item.objects.get(id = item2.id)
-
-        self.assertTrue(item1.is_done)
-        self.assertFalse(item2.is_done)
-
-class NewItemTest(TestCase):
-    def test_can_save_a_post_request_to_an_existing_list(self):
-        correct_list = List.objects.create()
-        self.client.post(
-            '/lists/%d/add_item' % (correct_list.id),
-            data = {'item_text': 'A new item for an existing list'}
-        )
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new item for an existing list')
-        self.assertEqual(new_item.list, correct_list)
-
-    def test_redirects_to_list_view(self):
-        correct_list = List.objects.create()
-        response = self.client.post(
-            '/lists/%d/add_item' % (correct_list.id,),
-            data = {'item_text' : 'A new item for an existing list'}
-        )
-        self.assertRedirects(response, '/lists/%d/' % (correct_list.id))
-
 
 class ListViewTest(TestCase):
     def test_uses_list_template(self):
@@ -123,3 +76,47 @@ class ListViewTest(TestCase):
         correct_list = List.objects.create()
         response = self.client.get('/lists/%d/' % (correct_list.id,))
         self.assertEqual(response.context['list'], correct_list)
+
+    def test_can_save_a_post_request_to_an_existing_list(self):
+        correct_list = List.objects.create()
+        self.client.post(
+            '/lists/%d/add_item' % (correct_list.id),
+            data = {'item_text': 'A new item for an existing list'}
+        )
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new item for an existing list')
+        self.assertEqual(new_item.list, correct_list)
+
+    def test_validation_errors_stay_on_list_page(self):
+        pass
+
+    def test_invalid_list_items_arent_saved(self):
+        pass
+
+    def test_list_view_displays_checkbox(self):
+        current_list = List.objects.create()
+        Item.objects.create(text="Item 1", list = current_list)
+        Item.objects.create(text="Item 2", list = current_list)
+
+        response = self.client.get('/lists/%d/' % (current_list.id))
+
+        self.assertContains(response, 'input type = "checkbox"')
+
+    def test_POST_item_toggles_done(self):
+        current_list = List.objects.create()
+        item1 = Item.objects.create(text="Item 1", list = current_list)
+        item2 = Item.objects.create(text="Item 2", list = current_list)
+
+        #POST data
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id),
+            data={'mark_item_done' : item1.id}
+        )
+        self.assertRedirects(response, '/lists/%d/' % (current_list.id))
+
+        item1 = Item.objects.get(id = item1.id)
+        item2 = Item.objects.get(id = item2.id)
+
+        self.assertTrue(item1.is_done)
+        self.assertFalse(item2.is_done)

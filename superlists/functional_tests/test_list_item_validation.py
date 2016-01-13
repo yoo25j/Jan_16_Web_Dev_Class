@@ -18,7 +18,7 @@ class ItemValidationTest(TodoFunctionalTest):
         # She tries again with some etext for the item
         # which now works
         self.enter_a_new_item('Buy milk')
-        self.check_for_row_in_list_table('1. Buy milk')
+        self.check_for_row_in_list_table('Buy milk')
 
         # Edith perversely tries to enter a second blank item
         self.enter_a_new_item('')
