@@ -4,8 +4,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 class ToggleDoneTest(TodoFunctionalTest):
 
-    def tobble_todo_done(self, todo_text):
-        row = self.find_table_row(self, todo_text)
+    def toggle_todo_done(self, todo_text):
+        row = self.find_table_row(todo_text)
         row.find_element_by_tag_name('input').click()
         self.browser.find_element_by_id('toggle_done').click()
 

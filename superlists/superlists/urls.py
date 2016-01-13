@@ -4,5 +4,5 @@ from lists import urls as list_urls
 
 urlpatterns = [
     url(r'^$', list_views.home_page, name = 'home'),
-    url(r'^list/', include(list_urls)),
+    url(r'^lists/', include(list_urls)),
 ]
