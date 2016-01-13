@@ -1,5 +1,5 @@
-from django.utils.html import escape
 from django.core.urlresolvers import resolve
+from django.utils.html import escape
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.http import HttpRequest
@@ -48,7 +48,7 @@ class NewListTest(TestCase):
         self.client.post('/lists/new', data={'item_text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
-        
+
 class NewItemTest(TestCase):
     def test_can_save_a_post_request_to_an_existing_list(self):
         correct_list = List.objects.create()
