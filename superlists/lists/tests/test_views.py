@@ -18,6 +18,17 @@ class HomePageTest(TestCase): #extends test case
         expected_html = render_to_string('home.html') #after deleting tests below, put in this
         self.assertEqual(response.content.decode(), expected_html)
 
+    def test_home_page_has_todo_lists(self):
+        list1= List.objects.create(name="List 1")
+        list2= List.objects.create(name="List 2")
+        response = self.client.get('/')
+
+        context =response.context['todo_lists']
+        self.assertEqual(len(context), 2)
+        self.assertEqual(context[0], list1)
+        self.assertEqual(context[1], list2)
+
+
 class NewListTest(TestCase):
     def test_home_can_save_a_POST_request(self):
         self.client.post(
@@ -47,7 +58,6 @@ class NewListTest(TestCase):
         self.client.post('/lists/new', data={'item_text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
-
 
 class ListViewTest(TestCase):
     def test_uses_list_template(self):
@@ -116,12 +126,12 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'input type = "checkbox"')
 
     def test_edit_list_name(self):
-        current_list = List.objects.creatE()
+        current_list = List.objects.create()
         self.client.post(
-            '/lists/%d/' % (current_list,id),
+            '/lists/%d/' % (current_list.id),
             data = {'list_name': 'New List'}
         )
-        self.assertEqual(List.objects.first(), 'New List')
+        self.assertEqual(List.objects.first().name, 'New List')
 
 class EditListTest(TestCase):
     def test_POST_one_item_marks_done(self):

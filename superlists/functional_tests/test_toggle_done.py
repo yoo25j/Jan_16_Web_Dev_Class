@@ -5,9 +5,9 @@ from selenium.common.exceptions import NoSuchElementException
 class ToggleDoneTest(TodoFunctionalTest):
 
     def toggle_todo_done(self, todo_text_list):
-        row = self.find_table_row(todo_text_list)
+        #row = self.find_table_row(todo_text_list)
         for todo_text in todo_text_list:
-            row.self.find_table_Row(todo_text)
+            row = self.find_table_row(todo_text)
             row.find_element_by_tag_name('input').click()
         self.browser.find_element_by_id('toggle_done').click()
 
@@ -40,8 +40,7 @@ class ToggleDoneTest(TodoFunctionalTest):
 
         self.toggle_todo_done([
             'Buy peacock feathers',
-            'Buy fishing line'
-            ])
+            'Buy fishing line'])
 
         current_list_url = self.browser.current_url
         self.browser.quit()
@@ -66,7 +65,7 @@ class ToggleDoneTest(TodoFunctionalTest):
         self.enter_a_new_item('Buy sparkles')
         #she looks in her closet and already had fishing line
         self.toggle_todo_done(['Buy fishing line'])
-        self.check_marked_off(['Buy fishing line'])
+        self.check_marked_off('Buy fishing line')
         #she goes to the store and finishes shopping
         self.toggle_todo_done([
             'Buy feathers',
@@ -78,7 +77,7 @@ class ToggleDoneTest(TodoFunctionalTest):
         #she makes some flys and her closet is empty
         self.toggle_todo_done([
             'Buy feathers',
-            'Buy fishing line'
+            'Buy fishing line',
             'Buy sparkles',
         ])
         self.check_not_marked_off('Buy feathers')

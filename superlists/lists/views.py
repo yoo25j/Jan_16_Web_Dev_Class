@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lists.models import Item, List
 
 def home_page(request):
-    return render(request, 'home.html', )
+    return render(request, 'home.html', {'todo_lists': List.objects.all()})
 
 def new_list(request):
     new_list = List.objects.create()
@@ -29,9 +29,9 @@ def view_list(request, list_id):
                     item.save()
                 except ValidationError:
                     error = "You can't have an empty list item"
-                if request.POST.has_key('list_name'):
-                    list_.name = request.POST['list_name']
-                    list_.save()
+            if request.POST.has_key('list_name'):
+                list_.name = request.POST['list_name']
+                list_.save()
 
     return render(
         request, 'list.html',
