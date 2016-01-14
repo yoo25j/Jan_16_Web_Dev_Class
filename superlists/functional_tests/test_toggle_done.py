@@ -4,9 +4,11 @@ from selenium.common.exceptions import NoSuchElementException
 
 class ToggleDoneTest(TodoFunctionalTest):
 
-    def toggle_todo_done(self, todo_text):
+    def toggle_todo_done(self, todo_text_list):
         row = self.find_table_row(todo_text)
-        row.find_element_by_tag_name('input').click()
+        for todo_text in todo_text_list:
+            row.self.find_table_Row(todo_text)
+            row.find_element_by_tag_name('input').click()
         self.browser.find_element_by_id('toggle_done').click()
 
     def check_marked_off(self, todo_text):
@@ -29,8 +31,10 @@ class ToggleDoneTest(TodoFunctionalTest):
         checkboxes= self.browser.find_elements_by_css_selector(checkbox_selector)
         self.assertEqual(len(checkboxes), 2) #len = size
 
-        self.toggle_todo_done('Buy peacock feathers')
-        self.toggle_todo_done('Buy fishing line')
+        self.toggle_todo_done([
+            'Buy peacock feathers',
+            'Buy fishing line'
+            ])
 
         current_list_url = self.browser.current_url
         self.browser.quit()
