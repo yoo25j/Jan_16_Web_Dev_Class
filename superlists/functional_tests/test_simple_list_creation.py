@@ -1,7 +1,5 @@
 from .base import TodoFunctionalTest
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
 
 class NewVisitorTest(TodoFunctionalTest):
 
@@ -23,12 +21,12 @@ class NewVisitorTest(TodoFunctionalTest):
 
         edith_list_url = self.browser.current_url
         self.assertRegexpMatches(edith_list_url, '/lists/.+')
-        self.check_for_row_in_list_table('1. Buy peacock feathers')
+        self.check_for_row_in_list_table('Buy peacock feathers')
 
         self.enter_a_new_item('Use peacock feathers to make a fly')
 
-        self.check_for_row_in_list_table('1. Buy peacock feathers')
-        self.check_for_row_in_list_table('2. Use peacock feathers to make a fly')
+        self.check_for_row_in_list_table('Buy peacock feathers')
+        self.check_for_row_in_list_table('Use peacock feathers to make a fly')
 
         #now a new user, francis, comes along
         #we use a new browser session to make sure no info of ediths comes along (EG cookies, local storage)

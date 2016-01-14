@@ -36,38 +36,33 @@ class NewListTest(TestCase):
         new_list = List.objects.first()
         self.assertRedirects(response, '/lists/%d/' % (new_list.id,))
 
+    def test_POST_multiple_items_done(self):
+        current_list = List.objects.create()
+        item1 = Item.objects.create(text="Item 1", list = current_list)
+        item2 = Item.objects.create(text="Item 2", list = current_list)
+
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id),
+            data = {'mark_item_done' : [item1.id, item2.id]}
+        )
+
+        item1 = Item.objects.get(id = item1.id)
+        item2 = Item.objects.get(id = item2.id)
+        self.assertTrue(item1.is_done)
+        self.assertTrue(item2.is_done)
+
+
     def test_validation_errors_are_sent_back_to_home_page_template(self):
         response = self.client.post('/lists/new', data={'item_text': ''})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
         expected_error = escape("You can't have an empty list item")
-        #print(response.content.decode())
         self.assertContains(response, expected_error)
 
     def test_invalid_list_items_arent_saved(self):
         self.client.post('/lists/new', data={'item_text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
-
-class NewItemTest(TestCase):
-    def test_can_save_a_post_request_to_an_existing_list(self):
-        correct_list = List.objects.create()
-        self.client.post(
-            '/lists/%d/add_item' % (correct_list.id),
-            data = {'item_text': 'A new item for an existing list'}
-        )
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new item for an existing list')
-        self.assertEqual(new_item.list, correct_list)
-
-    def test_redirects_to_list_view(self):
-        correct_list = List.objects.create()
-        response = self.client.post(
-            '/lists/%d/add_item' % (correct_list.id,),
-            data = {'item_text' : 'A new item for an existing list'}
-        )
-        self.assertRedirects(response, '/lists/%d/' % (correct_list.id))
 
 
 class ListViewTest(TestCase):
@@ -96,3 +91,94 @@ class ListViewTest(TestCase):
         correct_list = List.objects.create()
         response = self.client.get('/lists/%d/' % (correct_list.id,))
         self.assertEqual(response.context['list'], correct_list)
+
+    def test_can_save_a_post_request_to_an_existing_list(self):
+        correct_list = List.objects.create()
+        self.client.post(
+            '/lists/%d/' % (correct_list.id),
+            data = {'item_text': 'A new item for an existing list'}
+        )
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new item for an existing list')
+        self.assertEqual(new_item.list, correct_list)
+
+    def test_validation_errors_stay_on_list_page(self):
+        current_list = List.objects.create()
+        response = self.client.post(
+            '/lists/%d/' % (current_list.id,),
+            data = {'item_text': ''}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'list.html')
+        expected_error = escape("You can't have an empty list item")
+        self.assertContains(response, expected_error)
+
+    def test_invalid_list_items_arent_saved(self):
+        current_list = List.objects.create()
+        self.client.post(
+            '/lists/%d/' % (current_list.id),
+            data = {'item_text' : ''}
+        )
+        self.assertEqual(Item.objects.count(),0)
+
+    def test_list_view_displays_checkbox(self):
+        current_list = List.objects.create()
+        Item.objects.create(text="Item 1", list = current_list)
+        Item.objects.create(text="Item 2", list = current_list)
+
+        response = self.client.get('/lists/%d/' % (current_list.id))
+
+        self.assertContains(response, 'input type = "checkbox"')
+
+    def test_POST_item_marks_done(self):
+        current_list = List.objects.create()
+        item1 = Item.objects.create(text="Item 1", list = current_list)
+        item2 = Item.objects.create(text="Item 2", list = current_list)
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id),
+            data={'mark_item_done' : item1.id}
+        )
+        self.assertRedirects(response, '/lists/%d/' % (current_list.id))
+        item1 = Item.objects.get(id = item1.id)
+        item2 = Item.objects.get(id = item2.id)
+        self.assertTrue(item1.is_done)
+        self.assertFalse(item2.is_done)
+
+    def test_POST_zero_items_done(self):
+        current_list = List.objects.create()
+        item1 = Item.objects.create(text="Item 1", list = current_list)
+        item2 = Item.objects.create(text="Item 2", list = current_list)
+
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id),
+            data = { }
+        )
+
+        item1 = Item.objects.get(id = item1.id)
+        item2 = Item.objects.get(id = item2.id)
+        self.assertFalse(item1.is_done)
+        self.assertFalse(item2.is_done)
+
+    def test_POST_item_toggles_done(self):
+        current_list = List.objects.create()
+        item1 = Item.objects.create(
+            text="Item 1",
+            list = current_list,
+            is_done=True
+        )
+        item2 = Item.objects.create(
+            text="Item 2",
+            list=current_list,
+            is_done=False
+        )
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id),
+            data={'mark_item_done' : [item2.id]}
+        )
+        self.assertRedirects(response, '/lists/%d/' % (current_list.id))
+
+        item1 = Item.objects.get(id = item1.id)
+        item2 = Item.objects.get(id = item2.id)
+        self.assertFalse(item1.is_done)
+        self.assertTrue(item2.is_done)

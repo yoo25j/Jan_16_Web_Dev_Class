@@ -35,6 +35,18 @@ def view_list(request, list_id):
         { 'list': list_, 'error': error}
     )
 
+def edit_list (request, list_id):
+    list_= List.objects.get(id=list_id)
+    for item in list_.item_set.all():
+        item.is_done = False
+        item.save()
+    item_ids = request.POST.getlist('mark_item_done')
+    for item_id in item_ids:
+        item= Item.objects.get(id=item_id)
+        item.is_done = True
+        item.save()
+    return redirect('/lists/%d/' % (list_.id))
+
 # def add_item(request, list_id):
 #     list_ = List.objects.get(id=list_id)
 #     Item.objects.create(text=request.POST['item_text'], list=list_,)
