@@ -22,13 +22,16 @@ def view_list(request, list_id):
     error = None
 
     if request.method == 'POST':
-        try:
-            item = Item(text = request.POST['item_text'], list = list_)
-            item.full_clean()
-            item.save()
-        except ValidationError:
-            error = "You can't have an empty list item"
-
+            if request.POST.has_key('item_text'):
+                try:
+                    item = Item(text = request.POST['item_text'], list = list_)
+                    item.full_clean()
+                    item.save()
+                except ValidationError:
+                    error = "You can't have an empty list item"
+                if request.POST.has_key('list_name'):
+                    list_.name = request.POST['list_name']
+                    list_.save()
 
     return render(
         request, 'list.html',
@@ -46,18 +49,3 @@ def edit_list (request, list_id):
         item.is_done = True
         item.save()
     return redirect('/lists/%d/' % (list_.id))
-
-# def add_item(request, list_id):
-#     list_ = List.objects.get(id=list_id)
-#     Item.objects.create(text=request.POST['item_text'], list=list_,)
-#     return redirect('/lists/%d/' % (list_.id,))
-
-
-#home_page = None
-# item = Item()
-# item.text = request.POST.get('item_text', '')
-# item.save()
-
-    # remove: HttpResponse('<html><title>To-Do lists</title></html>') #test result = "false is not true"
-    #render built into django
-    #tell it which file we want to use
