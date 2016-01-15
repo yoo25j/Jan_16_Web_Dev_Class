@@ -6,8 +6,9 @@ def home_page(request):
     return render(request, 'home.html', )
 
 def new_list(request):
-    new_list = List.objects.create()
-    item = Item(text=request.POST['item_text'], list=new_list)
+    item_text = request.POST['item_text']
+    new_list = List.objects.create(name=item_text)
+    item = Item(text=item_text, list=new_list)
     try:
         item.full_clean()
         item.save()
