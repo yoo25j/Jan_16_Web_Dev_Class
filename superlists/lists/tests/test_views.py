@@ -133,6 +133,13 @@ class ListViewTest(TestCase):
         )
         self.assertEqual(List.objects.first().name, 'New List')
 
+    def test_new_list_has_name_of_first_item(self):
+        response = self.client.post)
+            '/lists/new',
+            data= {'item_text': 'A new lists item'}
+        new_list = List.objects.first()
+        self.assertEqual(new_list.name, 'A new lists item')
+
 class EditListTest(TestCase):
     def test_POST_one_item_marks_done(self):
         #create list and items
