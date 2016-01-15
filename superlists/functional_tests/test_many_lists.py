@@ -3,7 +3,7 @@ from .base import TodoFunctionalTest
 class ManyListsTest(TodoFunctionalTest):
 
     def change_list_name(self,list_name):
-        inputbox = self.browser.get_element_by_id('id_rename_list')
+        inputbox = self.browser.find_element_by_id('id_rename_list')
         inputbox.sendkeys(list_name + '\n')
 
     def test_can_create_and_view_multiple_lists(self):
